@@ -1,30 +1,3 @@
-# class Person:
-
-#     def __init__(self,name,age,sex):
-#         self.name=name
-#         self.age=age
-#         self.sex=sex
-
-#     def say_hi(self):
-#         print(f'{self.name}, says hello.')
-
-
-# p1=Person('Daniel',19,'M')
-
-# p1.say_hi()
-# print(p1.sex)
-
-
-
-
-
-
-
-
-
-
-
-
 import random
 import mysql.connector
 
