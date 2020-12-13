@@ -164,6 +164,7 @@ while game:
     if x=='1':
         hit()
     elif x=='0':
+        print('Dealer has:')
         dealer_has()
         dealer_hit()
         stand()
