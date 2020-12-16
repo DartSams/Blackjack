@@ -180,6 +180,10 @@ def player_hit():
     img.place(x=player_origin,y=278)
     player_hand.append(extra.value)
 
+
+    print(player_hand)
+    print(sum(player_hand))
+
 def dealer_hit():
     global player_origin,dealer_draw,dealer_origin,stand_stat,img
     # dealer_draw+=1
@@ -194,6 +198,7 @@ def dealer_hit():
     img.image=card
     img.place(x=dealer_origin,y=10)
     dealer_hand.append(extra.value)
+    
 
 def dealer_hidden():
     global player_origin,dealer_draw,dealer_origin,stand_stat,img
@@ -231,13 +236,15 @@ def player_stand():
     print(int(dealer_draw))
     print(sum(player_hand))
 
-    update_text()
     check_21()
+    update_text()
+    
     
     player_origin=155
     dealer_origin=175
     dealer_draw=0
     stand_stat=False
+    double_down_stat=False
 
 def double_down():
     double_down_stat=True
@@ -252,14 +259,11 @@ def update_text():
 
 
 def adjust_ace():
-    # if sum(player_hand)>21 and 11 in player_hand:
-    #     player_hand.remove(11)
-    #     player_hand.append(1)
-        
-    for i in player_hand:
-        if i ==11 and sum(player_hand)>21:
-            player_hand.remove(11)
-            player_hand.append(1)
+    if sum(player_hand) and player_hand.count(11)>0:
+        player_hand.remove(11)
+        player_hand.append(1)
+
+    print('player total: '+str(sum(player_hand)))
 
 
 def check_21():
@@ -275,12 +279,12 @@ def check_21():
             mycursor.execute(f"UPDATE Blackjack SET money = money * 2 WHERE password = '{passw2.get()}'")
             db.commit()
     
-    elif sum(dealer_hand)>sum(player_hand) and sum(dealer_hand)<21:
-        print(f'***Dealer wins with {sum(dealer_hand)}***')
-        win_lose=Label(root,background='green',text='Dealer wins',font=('Florent',30))
-        win_lose.place(x=450,y=160)
-        mycursor.execute(f"UPDATE Blackjack SET money = money / 2 WHERE password = '{passw2.get()}'")
-        db.commit()
+    # elif sum(dealer_hand)>sum(player_hand) and sum(dealer_hand)<21:
+    #     print(f'***Dealer wins with {sum(dealer_hand)}***')
+    #     win_lose=Label(root,background='green',text='Dealer wins',font=('Florent',30))
+    #     win_lose.place(x=450,y=160)
+    #     mycursor.execute(f"UPDATE Blackjack SET money = money / 2 WHERE password = '{passw2.get()}'")
+    #     db.commit()
         
 
     elif sum(player_hand)==21:
@@ -312,12 +316,12 @@ def check_21():
         mycursor.execute(f"UPDATE Blackjack SET money = money / 2 WHERE password = '{passw2.get()}'")
         db.commit()
 
-    elif sum(dealer_hand)>21:
-        print('***Dealer Bust***')
-        win_lose=Label(root,background='green',text='Dealer Bust',font=('Florent',30))
-        win_lose.place(x=450,y=160)
-        mycursor.execute(f"UPDATE Blackjack SET money = money * 2 WHERE password = '{passw2.get()}'")
-        db.commit()
+    # elif sum(dealer_hand)>21:
+    #     print('***Dealer Bust***')
+    #     win_lose=Label(root,background='green',text='Dealer Bust',font=('Florent',30))
+    #     win_lose.place(x=450,y=160)
+    #     mycursor.execute(f"UPDATE Blackjack SET money = money * 2 WHERE password = '{passw2.get()}'")
+    #     db.commit()
     
     ending()
 
