@@ -14,10 +14,12 @@ db=mysql.connector.connect(
 
 mycursor=db.cursor(buffered=True)
 player_origin=155
-dealer_origin=160
+dealer_origin=175
 dealer_draw=0
 dealer_hand=[]
 player_hand=[]
+stand_stat=False
+double_down_stat=False
 
 class Card:
 
@@ -88,11 +90,12 @@ def add_to_db():
     global user1,passw1,user2,passw2,sign_enter,sign,create,create_user2,create_passw2,save,user2,del1,del2
     print(create_user2.get())
     print(create_passw2.get())
+    
+    mycursor.execute("INSERT INTO Blackjack (name,password,money) VALUES (%s,%s,%s)", (create_user2.get(),create_passw2.get(),100))
+    db.commit()
+
     create_user2.delete(0,END)
     create_passw2.delete(0,END)
-
-    # mycursor.execute("INSERT INTO Blackjack (name,password,money) VALUES (%s,%s,%s)", (create_user2.get(),create_passw2.get(),100))
-    # db.commit()
 
 def sign_in():
     global bj
@@ -112,6 +115,8 @@ def sign_in():
 
 
 def start_bj():
+    global player_origin,dealer_draw,dealer_origin,stand_stat,player_num,dealer_num,hit,stand,double,img,load,card
+
     root.geometry('894x381')
     welcome1.grid_forget()
     welcome2.grid_forget()
@@ -129,10 +134,10 @@ def start_bj():
     hit=Button(root,text='Hit Me',font=('Florent',10),command=lambda: player_hit())
     hit.place(x=55,y=55)
 
-    stand=Button(root,text='Stand',font=('Florent',10))
+    stand=Button(root,text='Stand',font=('Florent',10),command=lambda: player_stand())
     stand.place(x=57,y=180)
 
-    double=Button(root,text='Double Down',font=('Florent',10))
+    double=Button(root,text='Double Down',font=('Florent',10),command=lambda: double_down())
     double.place(x=40,y=300)
 
     dealer_num=Label(root,background='green',font=('Florent',20),text="Dealer's hand: ")
@@ -141,17 +146,27 @@ def start_bj():
     player_num=Label(root,background='green',font=('Florent',20),text="PLayer's hand: ")
     player_num.place(x=170,y=223)
 
-    win_lose=Label(root,background='green',text='PLayer blackjack',font=('Florent',50))
-    win_lose.place(x=350,y=160)
+    
 
     dealer_hit()
-    dealer_hit()
+    dealer_hidden()
 
-    player_hit()
-    player_hit()
+    for i in range(2):
+        # dealer_draw+=1
+        player_origin+=15
+        extra=random.choice(card_nums)
+        suite=random.choice(card_values)
+
+        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\{extra.name}.png")
+        card=ImageTk.PhotoImage(load)
+
+        img=Label(image=card)
+        img.image=card
+        img.place(x=player_origin,y=278)
+        player_hand.append(extra.value)
 
 def player_hit():
-    global player_origin,dealer_draw,dealer_origin
+    global player_origin,dealer_draw,dealer_origin,stand_stat,img
     dealer_draw+=1
     player_origin+=15
     extra=random.choice(card_nums)
@@ -163,10 +178,11 @@ def player_hit():
     img=Label(image=card)
     img.image=card
     img.place(x=player_origin,y=278)
+    player_hand.append(extra.value)
 
 def dealer_hit():
-    global player_origin,dealer_draw,dealer_origin
-    dealer_draw+=1
+    global player_origin,dealer_draw,dealer_origin,stand_stat,img
+    # dealer_draw+=1
     dealer_origin+=15
     extra=random.choice(card_nums)
     suite=random.choice(card_values)
@@ -177,6 +193,208 @@ def dealer_hit():
     img=Label(image=card)
     img.image=card
     img.place(x=dealer_origin,y=10)
+    dealer_hand.append(extra.value)
+
+def dealer_hidden():
+    global player_origin,dealer_draw,dealer_origin,stand_stat,img
+    # dealer_draw+=1
+    dealer_origin+=15
+    extra=random.choice(card_nums)
+    suite=random.choice(card_values)
+
+    if stand_stat==False:
+        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\hidden card.jpg")
+        card=ImageTk.PhotoImage(load)
+
+        img=Label(image=card)
+        img.image=card
+        img.place(x=dealer_origin,y=10)
+        stand_stat=False
+    
+    else:
+        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\{extra.name}.png")
+        card=ImageTk.PhotoImage(load)
+
+        img=Label(image=card)
+        img.image=card
+        img.place(x=dealer_origin-15,y=10)
+        dealer_hand.append(extra.value)
+
+
+def player_stand():
+    global player_origin,dealer_draw,dealer_origin,stand_stat,img
+    stand_stat=True
+    dealer_hidden()
+    if dealer_draw>=1:
+        for i in range(int(dealer_draw)):
+            dealer_hit()
+    print(int(dealer_draw))
+    print(sum(player_hand))
+
+    update_text()
+    check_21()
+    
+    player_origin=155
+    dealer_origin=175
+    dealer_draw=0
+    stand_stat=False
+
+def double_down():
+    double_down_stat=True
+    player_hit()
+    player_stand()
+
+def update_text():
+    player_num.configure(text=f"PLayer's hand: {sum(player_hand)}")
+    print(player_hand)
+    dealer_num.configure(text=f"Dealer's hand: {sum(dealer_hand)}")
+    print(dealer_hand)
+
+
+def adjust_ace():
+    # if sum(player_hand)>21 and 11 in player_hand:
+    #     player_hand.remove(11)
+    #     player_hand.append(1)
+        
+    for i in player_hand:
+        if i ==11 and sum(player_hand)>21:
+            player_hand.remove(11)
+            player_hand.append(1)
+
+
+def check_21():
+    adjust_ace()
+
+    if sum(player_hand)>sum(dealer_hand) and sum(player_hand)<21:
+        print(f'***Player wins with {sum(player_hand)}***')
+        win_lose=Label(root,background='green',text='PLayer wins',font=('Florent',30))
+        win_lose.place(x=450,y=160)
+        mycursor.execute(f"UPDATE Blackjack SET money = money * 2 WHERE password = '{passw2.get()}'")
+        db.commit()
+        if double_down_stat==True:
+            mycursor.execute(f"UPDATE Blackjack SET money = money * 2 WHERE password = '{passw2.get()}'")
+            db.commit()
+    
+    elif sum(dealer_hand)>sum(player_hand) and sum(dealer_hand)<21:
+        print(f'***Dealer wins with {sum(dealer_hand)}***')
+        win_lose=Label(root,background='green',text='Dealer wins',font=('Florent',30))
+        win_lose.place(x=450,y=160)
+        mycursor.execute(f"UPDATE Blackjack SET money = money / 2 WHERE password = '{passw2.get()}'")
+        db.commit()
+        
+
+    elif sum(player_hand)==21:
+        print('***Player has BLACKJACK***')
+        win_lose=Label(root,background='green',text='Player has BLACKJACK',font=('Florent',30))
+        win_lose.place(x=450,y=160)
+        mycursor.execute(f"UPDATE Blackjack SET money = money * 2 WHERE password = '{passw2.get()}'")
+        db.commit()
+        if double_down_stat==True:
+            mycursor.execute(f"UPDATE Blackjack SET money = money * 2 WHERE password = '{passw2.get()}'")
+            db.commit()
+
+    elif sum(dealer_hand)==21:
+        print('***Dealer has BLACKJACK***')
+        win_lose=Label(root,background='green',text='Dealer has BLACKJACK',font=('Florent',30))
+        win_lose.place(x=450,y=160)
+        mycursor.execute(f"UPDATE Blackjack SET money = money / 2 WHERE password = '{passw2.get()}'")
+        db.commit()
+
+    elif sum(player_hand)==sum(dealer_hand):
+        print('***PUSH***')
+        win_lose=Label(root,background='green',text='Push',font=('Florent',30))
+        win_lose.place(x=450,y=160)
+
+    elif sum(player_hand)>21:
+        print('***Player Bust***')
+        win_lose=Label(root,background='green',text='PLayer Bust',font=('Florent',30))
+        win_lose.place(x=450,y=160)
+        mycursor.execute(f"UPDATE Blackjack SET money = money / 2 WHERE password = '{passw2.get()}'")
+        db.commit()
+
+    elif sum(dealer_hand)>21:
+        print('***Dealer Bust***')
+        win_lose=Label(root,background='green',text='Dealer Bust',font=('Florent',30))
+        win_lose.place(x=450,y=160)
+        mycursor.execute(f"UPDATE Blackjack SET money = money * 2 WHERE password = '{passw2.get()}'")
+        db.commit()
+    
+    ending()
+
+
+def ending():
+    hit.place_forget()
+    stand.place_forget()
+    double.place_forget()
+
+    new_game=Button(root,text='New Game',command=lambda: game_again())
+    new_game.place(x=55,y=55)
+
+
+    quit_=Button(root,text='Quit')
+    quit_.place(x=70,y=300)
+
+
+def game_again():
+    player_hand.clear()
+    dealer_hand.clear()
+    
+
+
+    for widget in root.winfo_children():
+        widget.place_forget()
+        widget.pack_forget()
+
+    stand_stat=False
+    start_bj()
+
+    # dealer_origin=155
+    # player_origin=175
+    # stand_stat=True
+
+    # hit=Button(root,text='Hit Me',font=('Florent',10),command=lambda: player_hit())
+    # hit.place(x=55,y=55)
+
+    # stand=Button(root,text='Stand',font=('Florent',10),command=lambda: player_stand())
+    # stand.place(x=57,y=180)
+
+    # double=Button(root,text='Double Down',font=('Florent',10),command=lambda: double_down())
+    # double.place(x=40,y=300)
+
+    # dealer_num=Label(root,background='green',font=('Florent',20),text="Dealer's hand: ")
+    # dealer_num.place(x=170,y=130)
+
+    # player_num=Label(root,background='green',font=('Florent',20),text="PLayer's hand: ")
+    # player_num.place(x=170,y=223)
+
+    # dealer_hit()
+    # dealer_hidden()
+
+    # for i in range(2):
+    #     # dealer_draw+=1
+    #     player_origin+=15
+    #     extra=random.choice(card_nums)
+    #     suite=random.choice(card_values)
+
+    #     load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\{extra.name}.png")
+    #     card=ImageTk.PhotoImage(load)
+
+    #     img=Label(image=card)
+    #     img.image=card
+    #     img.place(x=player_origin,y=278)
+    #     player_hand.append(extra.value)
+    
+
+
+
+
+
+
+
+
+
+
+
 
 def close_all():
     global user1,passw1,user2,passw2,sign_enter,sign,create,create_user2,create_passw2,save,user2,del1,del2
