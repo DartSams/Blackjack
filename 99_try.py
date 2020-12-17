@@ -222,6 +222,7 @@ if help_=='/help':
     print('/create account')
     print('/rules')    
     print('/delete')
+    print('/play')
 
 if help_=='/sign in':
     name=input('Name please: ')
