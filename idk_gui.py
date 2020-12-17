@@ -152,12 +152,11 @@ def start_bj():
     dealer_hidden()
 
     for i in range(2):
-        # dealer_draw+=1
         player_origin+=15
         extra=random.choice(card_nums)
         suite=random.choice(card_values)
 
-        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\{extra.name}.png")
+        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
         card=ImageTk.PhotoImage(load)
 
         img=Label(image=card)
@@ -172,7 +171,7 @@ def player_hit():
     extra=random.choice(card_nums)
     suite=random.choice(card_values)
 
-    load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\{extra.name}.png")
+    load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
     card=ImageTk.PhotoImage(load)
 
     img=Label(image=card)
@@ -186,12 +185,11 @@ def player_hit():
 
 def dealer_hit():
     global player_origin,dealer_draw,dealer_origin,stand_stat,img
-    # dealer_draw+=1
     dealer_origin+=15
     extra=random.choice(card_nums)
     suite=random.choice(card_values)
 
-    load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\{extra.name}.png")
+    load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
     card=ImageTk.PhotoImage(load)
 
     img=Label(image=card)
@@ -202,13 +200,12 @@ def dealer_hit():
 
 def dealer_hidden():
     global player_origin,dealer_draw,dealer_origin,stand_stat,img
-    # dealer_draw+=1
     dealer_origin+=15
     extra=random.choice(card_nums)
     suite=random.choice(card_values)
 
     if stand_stat==False:
-        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\hidden card.jpg")
+        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\blackjack cards\hidden card.jpg")
         card=ImageTk.PhotoImage(load)
 
         img=Label(image=card)
@@ -217,7 +214,7 @@ def dealer_hidden():
         stand_stat=False
     
     else:
-        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\{extra.name}.png")
+        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
         card=ImageTk.PhotoImage(load)
 
         img=Label(image=card)
@@ -259,9 +256,13 @@ def update_text():
 
 
 def adjust_ace():
-    if sum(player_hand) and player_hand.count(11)>0:
+    if sum(player_hand)>21 and player_hand.count(11)>0:
         player_hand.remove(11)
         player_hand.append(1)
+
+    if sum(dealer_hand)>21 and dealer_hand.count(11)>0:
+        dealer_hand.remove(11)
+        dealer_hand.append(1)
 
     print('player total: '+str(sum(player_hand)))
 
@@ -279,12 +280,12 @@ def check_21():
             mycursor.execute(f"UPDATE Blackjack SET money = money * 2 WHERE password = '{passw2.get()}'")
             db.commit()
     
-    # elif sum(dealer_hand)>sum(player_hand) and sum(dealer_hand)<21:
-    #     print(f'***Dealer wins with {sum(dealer_hand)}***')
-    #     win_lose=Label(root,background='green',text='Dealer wins',font=('Florent',30))
-    #     win_lose.place(x=450,y=160)
-    #     mycursor.execute(f"UPDATE Blackjack SET money = money / 2 WHERE password = '{passw2.get()}'")
-    #     db.commit()
+    elif sum(dealer_hand)>sum(player_hand) and sum(dealer_hand)<21:
+        print(f'***Dealer wins with {sum(dealer_hand)}***')
+        win_lose=Label(root,background='green',text='Dealer wins',font=('Florent',30))
+        win_lose.place(x=450,y=160)
+        mycursor.execute(f"UPDATE Blackjack SET money = money / 2 WHERE password = '{passw2.get()}'")
+        db.commit()
         
 
     elif sum(player_hand)==21:
@@ -316,12 +317,18 @@ def check_21():
         mycursor.execute(f"UPDATE Blackjack SET money = money / 2 WHERE password = '{passw2.get()}'")
         db.commit()
 
-    # elif sum(dealer_hand)>21:
-    #     print('***Dealer Bust***')
-    #     win_lose=Label(root,background='green',text='Dealer Bust',font=('Florent',30))
-    #     win_lose.place(x=450,y=160)
-    #     mycursor.execute(f"UPDATE Blackjack SET money = money * 2 WHERE password = '{passw2.get()}'")
-    #     db.commit()
+    
+    elif sum(player_hand)>21 and sum(dealer_hand)>21:
+        print('***Both Bust***')
+        win_lose=Label(root,background='green',text='Both Bust',font=('Florent',30))
+        win_lose.place(x=450,y=160)
+        
+    elif sum(dealer_hand)>21 and sum(player_hand)<21:
+        print('***PLayer wins***')
+        win_lose=Label(root,background='green',text='Player Wins',font=('Florent',30))
+        win_lose.place(x=450,y=160)
+        mycursor.execute(f"UPDATE Blackjack SET money = money * 2 WHERE password = '{passw2.get()}'")
+        db.commit()
     
     ending()
 
@@ -344,7 +351,6 @@ def game_again():
     dealer_hand.clear()
     
 
-
     for widget in root.winfo_children():
         widget.place_forget()
         widget.pack_forget()
@@ -352,56 +358,16 @@ def game_again():
     stand_stat=False
     start_bj()
 
-    # dealer_origin=155
-    # player_origin=175
-    # stand_stat=True
 
-    # hit=Button(root,text='Hit Me',font=('Florent',10),command=lambda: player_hit())
-    # hit.place(x=55,y=55)
-
-    # stand=Button(root,text='Stand',font=('Florent',10),command=lambda: player_stand())
-    # stand.place(x=57,y=180)
-
-    # double=Button(root,text='Double Down',font=('Florent',10),command=lambda: double_down())
-    # double.place(x=40,y=300)
-
-    # dealer_num=Label(root,background='green',font=('Florent',20),text="Dealer's hand: ")
-    # dealer_num.place(x=170,y=130)
-
-    # player_num=Label(root,background='green',font=('Florent',20),text="PLayer's hand: ")
-    # player_num.place(x=170,y=223)
-
-    # dealer_hit()
-    # dealer_hidden()
-
-    # for i in range(2):
-    #     # dealer_draw+=1
-    #     player_origin+=15
-    #     extra=random.choice(card_nums)
-    #     suite=random.choice(card_values)
-
-    #     load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\{extra.name}.png")
-    #     card=ImageTk.PhotoImage(load)
-
-    #     img=Label(image=card)
-    #     img.image=card
-    #     img.place(x=player_origin,y=278)
-    #     player_hand.append(extra.value)
-    
-
-
-
-
-
-
-
-
-
-
-
-
+#in case i want to go from create account to sign in
 def close_all():
     global user1,passw1,user2,passw2,sign_enter,sign,create,create_user2,create_passw2,save,user2,del1,del2
+
+    for widget in root.winfo_children():
+        widget.grid_forget()
+        widget.pack_forget()
+        widget.place_forget()
+
     # if del1==True:
     #     user1.grid_forget()
     #     passw1.grid_forget()
@@ -418,6 +384,7 @@ def close_all():
     #     save.grid_forget()
     #     del2=False
 
+
 root=Tk()
 root.title('Blackjack')
 root.configure(background='green')
@@ -433,13 +400,5 @@ sign.grid(row=3,column=0,columnspan=10)
 create=Button(root,text='Create Account',background='green',font=('Florent',15),command=lambda: create_account())
 create.grid(row=4,column=0,columnspan=10)
 
-# exit=Button(root,text='Exit',command=lambda: close_all())
-# exit.grid(row=5,column=10)
-
-# x=random.choice(num)
-# y=random.choice(suite)
-# card=ImageTk.PhotoImage(Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\{x} of {y}.png"))
-# label=Label(image=card)
-# label.place(x=550,y=200)
 
 root.mainloop()
