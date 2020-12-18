@@ -2,6 +2,7 @@ from tkinter import *
 import random
 import mysql.connector
 from PIL import ImageTk,Image
+import sys
 
 
 
@@ -49,10 +50,13 @@ card_nums=[ace,two,three,four,five,six,seven,eight,nine,ten,jack,queen,king]
 
 
 def signup():
-    global user1,passw1,user2,passw2,sign_enter,sign,create,create_user2,create_passw2,save,user2,del1,del2
+    global user1,passw1,user2,passw2,sign_enter,sign,create,create_user2,create_passw2,save,user2,del1,del2,test
     del1=True
-    sign.grid_forget()
-    create.grid_forget()
+
+    close_all()
+
+    test=Label(root,text='Sign in Please',background='green',font=('Florent',50))
+    test.grid(row=0,column=0,columnspan=10)
 
     user1=Label(root,background='green',text='Username:',font=('Florent',15))
     user1.grid(row=3,column=0,padx=50)
@@ -86,6 +90,19 @@ def create_account():
     save=Button(root,text='Save',background='green',command=lambda: add_to_db())
     save.grid(row=5,column=1)
 
+    exit_=Button(root,text='Exit',command=lambda:after_create_acc())
+    exit_.grid(row=5,column=2)
+    
+
+def after_create_acc():
+    global user1,passw1,user2,passw2,sign_enter,sign,create,create_user2,create_passw2,save,user2,del1,del2,test
+    close_all()
+
+    test=Label(root,text='Sign in Please',background='green',font=('Florent',50))
+    test.grid(row=0,column=0,columnspan=10)
+
+    signup()
+
 def add_to_db():
     global user1,passw1,user2,passw2,sign_enter,sign,create,create_user2,create_passw2,save,user2,del1,del2
     print(create_user2.get())
@@ -98,30 +115,24 @@ def add_to_db():
     create_passw2.delete(0,END)
 
 def sign_in():
-    global bj
+    global bj,test
     print(passw2.get())
     mycursor.execute(f"SELECT * FROM Blackjack WHERE password = '{passw2.get()}'")
     for i in mycursor:
         print(i)
 
-    user1.grid_forget()
-    passw1.grid_forget()
-    user2.grid_forget()
-    passw2.grid_forget()
-    sign_enter.grid_forget()
-
+    close_all()
+    games=Label(root,text='Select a game',background='green',font=('Florent',50))
+    games.grid(row=0,column=0,columnspan=10)
     bj=Button(root,text='Blackjack',command=lambda: start_bj())
     bj.grid(row=3,column=0,columnspan=10)
 
 
 def start_bj():
-    global player_origin,dealer_draw,dealer_origin,stand_stat,player_num,dealer_num,hit,stand,double,img,load,card
-
+    global player_origin,dealer_draw,dealer_origin,stand_stat,player_num,dealer_num,hit,stand,double,img,load,card,test
+ 
     root.geometry('894x381')
-    welcome1.grid_forget()
-    welcome2.grid_forget()
-    bj.grid_forget()
-
+    close_all()
 
     canvas=Canvas(root,background='green')
     canvas.create_line(0,5, 160, 5,width=10)
@@ -156,13 +167,15 @@ def start_bj():
         extra=random.choice(card_nums)
         suite=random.choice(card_values)
 
-        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
+        load=Image.open(rf"C:\Users\godof\VSCodeProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
         card=ImageTk.PhotoImage(load)
 
         img=Label(image=card)
         img.image=card
         img.place(x=player_origin,y=278)
         player_hand.append(extra.value)
+    
+    update_text()
 
 def player_hit():
     global player_origin,dealer_draw,dealer_origin,stand_stat,img
@@ -171,7 +184,7 @@ def player_hit():
     extra=random.choice(card_nums)
     suite=random.choice(card_values)
 
-    load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
+    load=Image.open(rf"C:\Users\godof\VSCodeProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
     card=ImageTk.PhotoImage(load)
 
     img=Label(image=card)
@@ -179,9 +192,8 @@ def player_hit():
     img.place(x=player_origin,y=278)
     player_hand.append(extra.value)
 
+    update_text()
 
-    print(player_hand)
-    print(sum(player_hand))
 
 def dealer_hit():
     global player_origin,dealer_draw,dealer_origin,stand_stat,img
@@ -189,13 +201,15 @@ def dealer_hit():
     extra=random.choice(card_nums)
     suite=random.choice(card_values)
 
-    load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
+    load=Image.open(rf"C:\Users\godof\VSCodeProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
     card=ImageTk.PhotoImage(load)
 
     img=Label(image=card)
     img.image=card
     img.place(x=dealer_origin,y=10)
     dealer_hand.append(extra.value)
+
+    update_text()
     
 
 def dealer_hidden():
@@ -205,7 +219,7 @@ def dealer_hidden():
     suite=random.choice(card_values)
 
     if stand_stat==False:
-        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\blackjack cards\hidden card.jpg")
+        load=Image.open(rf"C:\Users\godof\VSCodeProjects\GitHub\Blackjack\blackjack cards\hidden card.jpg")
         card=ImageTk.PhotoImage(load)
 
         img=Label(image=card)
@@ -214,7 +228,7 @@ def dealer_hidden():
         stand_stat=False
     
     else:
-        load=Image.open(rf"C:\Users\godof\PycharmProjects\PythonProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
+        load=Image.open(rf"C:\Users\godof\VSCodeProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
         card=ImageTk.PhotoImage(load)
 
         img=Label(image=card)
@@ -342,7 +356,7 @@ def ending():
     new_game.place(x=55,y=55)
 
 
-    quit_=Button(root,text='Quit')
+    quit_=Button(root,text='Quit',command=lambda: sys.exit())
     quit_.place(x=70,y=300)
 
 
@@ -359,30 +373,13 @@ def game_again():
     start_bj()
 
 
-#in case i want to go from create account to sign in
 def close_all():
     global user1,passw1,user2,passw2,sign_enter,sign,create,create_user2,create_passw2,save,user2,del1,del2
-
     for widget in root.winfo_children():
         widget.grid_forget()
         widget.pack_forget()
         widget.place_forget()
 
-    # if del1==True:
-    #     user1.grid_forget()
-    #     passw1.grid_forget()
-    #     user2.grid_forget()
-    #     passw2.grid_forget()
-    #     sign_enter.grid_forget()
-    #     del1=False
-
-    # elif del2==True:
-    #     user1.grid_forget()
-    #     passw1.grid_forget()
-    #     create_user2.grid_forget()
-    #     create_passw2.grid_forget()
-    #     save.grid_forget()
-    #     del2=False
 
 
 root=Tk()
