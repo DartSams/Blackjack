@@ -3,13 +3,14 @@ import random
 import mysql.connector
 from PIL import ImageTk,Image
 import sys
+from config import *
 
 
 
 db=mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="Dartagnan18@",
+    passwd=passwd,
     database="testdatabase"
     )
 
