@@ -1,9 +1,10 @@
 import mysql.connector
+from config import *
 
 db=mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="Dartagnan18@",
+    passwd=passwd,
     database="testdatabase"
     )
 
@@ -32,8 +33,8 @@ mycursor=db.cursor(buffered=True)
 # mycursor.execute(f"SELECT * FROM Blackjack WHERE name = '{y}'")
 
 ###delete entries
-mycursor.execute("DELETE FROM Blackjack WHERE money > 1")
-db.commit()
+# mycursor.execute("DELETE FROM Blackjack WHERE money > 1")
+# db.commit()
 
 
 # mycursor.execute(f"UPDATE Blackjack SET money = money / 2 WHERE name = '{y}'")
