@@ -8,7 +8,7 @@ from config import *
 
 
 db=mysql.connector.connect(
-    host="localhost",
+    host=ip,
     user="root",
     passwd=passwd,
     database="testdatabase"
@@ -106,8 +106,8 @@ def after_create_acc():
 
 def add_to_db():
     global user1,passw1,user2,passw2,sign_enter,sign,create,create_user2,create_passw2,save,user2,del1,del2
-    print(create_user2.get())
-    print(create_passw2.get())
+    print('Name: '+create_user2.get())
+    print('Password: '+create_passw2.get())
     
     mycursor.execute("INSERT INTO Blackjack (name,password,money) VALUES (%s,%s,%s)", (create_user2.get(),create_passw2.get(),100))
     db.commit()
@@ -119,6 +119,7 @@ def sign_in():
     global bj,test
     print(passw2.get())
     mycursor.execute(f"SELECT * FROM Blackjack WHERE password = '{passw2.get()}'")
+    print('Logged in as')
     for i in mycursor:
         print(i)
 
@@ -245,8 +246,7 @@ def player_stand():
     if dealer_draw>=1:
         for i in range(int(dealer_draw)):
             dealer_hit()
-    print(int(dealer_draw))
-    print(sum(player_hand))
+
 
     check_21()
     update_text()
@@ -265,9 +265,7 @@ def double_down():
 
 def update_text():
     player_num.configure(text=f"PLayer's hand: {sum(player_hand)}")
-    print(player_hand)
     dealer_num.configure(text=f"Dealer's hand: {sum(dealer_hand)}")
-    print(dealer_hand)
 
 
 def adjust_ace():
