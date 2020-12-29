@@ -4,11 +4,11 @@ import mysql.connector
 from PIL import ImageTk,Image
 import sys
 from config import *
-
+import os
 
 
 db=mysql.connector.connect(
-    host=ip,
+    host= ip,
     user="root",
     passwd=passwd,
     database="testdatabase"
@@ -106,8 +106,8 @@ def after_create_acc():
 
 def add_to_db():
     global user1,passw1,user2,passw2,sign_enter,sign,create,create_user2,create_passw2,save,user2,del1,del2
-    print('Name: '+create_user2.get())
-    print('Password: '+create_passw2.get())
+    print(create_user2.get())
+    print(create_passw2.get())
     
     mycursor.execute("INSERT INTO Blackjack (name,password,money) VALUES (%s,%s,%s)", (create_user2.get(),create_passw2.get(),100))
     db.commit()
@@ -118,8 +118,7 @@ def add_to_db():
 def sign_in():
     global bj,test
     print(passw2.get())
-    mycursor.execute(f"SELECT * FROM Blackjack WHERE password = '{passw2.get()}'")
-    print('Logged in as')
+    mycursor.execute(f"SELECT * FROM Blackjack WHERE password = '{passw2.get()}' AND name = '{user2.get()}'")
     for i in mycursor:
         print(i)
 
@@ -169,7 +168,8 @@ def start_bj():
         extra=random.choice(card_nums)
         suite=random.choice(card_values)
 
-        load=Image.open(rf"C:\Users\godof\VSCodeProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
+        dirname=os.path.dirname(__file__)
+        load=Image.open(fr'{dirname}\blackjack_cards\{extra.name}.png')
         card=ImageTk.PhotoImage(load)
 
         img=Label(image=card)
@@ -186,7 +186,8 @@ def player_hit():
     extra=random.choice(card_nums)
     suite=random.choice(card_values)
 
-    load=Image.open(rf"C:\Users\godof\VSCodeProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
+    dirname=os.path.dirname(__file__)
+    load=Image.open(fr'{dirname}\blackjack_cards\{extra.name}.png')
     card=ImageTk.PhotoImage(load)
 
     img=Label(image=card)
@@ -203,7 +204,8 @@ def dealer_hit():
     extra=random.choice(card_nums)
     suite=random.choice(card_values)
 
-    load=Image.open(rf"C:\Users\godof\VSCodeProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
+    dirname=os.path.dirname(__file__)
+    load=Image.open(fr'{dirname}\blackjack_cards\{extra.name}.png')
     card=ImageTk.PhotoImage(load)
 
     img=Label(image=card)
@@ -221,7 +223,9 @@ def dealer_hidden():
     suite=random.choice(card_values)
 
     if stand_stat==False:
-        load=Image.open(rf"C:\Users\godof\VSCodeProjects\GitHub\Blackjack\blackjack cards\hidden card.jpg")
+        dirname=os.path.dirname(__file__)
+        load=Image.open(fr'{dirname}\blackjack_cards\hidden card.jpg')
+        # load=Image.open(rf"C:\Users\godof\VSCodeProjects\dart_blackjack\blackjack_cards\hidden card.jpg")
         card=ImageTk.PhotoImage(load)
 
         img=Label(image=card)
@@ -230,7 +234,8 @@ def dealer_hidden():
         stand_stat=False
     
     else:
-        load=Image.open(rf"C:\Users\godof\VSCodeProjects\GitHub\Blackjack\blackjack cards\{extra.name}.png")
+        dirname=os.path.dirname(__file__)
+        load=Image.open(fr'{dirname}\blackjack_cards\{extra.name}.png')
         card=ImageTk.PhotoImage(load)
 
         img=Label(image=card)
@@ -246,7 +251,8 @@ def player_stand():
     if dealer_draw>=1:
         for i in range(int(dealer_draw)):
             dealer_hit()
-
+    print(int(dealer_draw))
+    print(sum(player_hand))
 
     check_21()
     update_text()
@@ -265,7 +271,9 @@ def double_down():
 
 def update_text():
     player_num.configure(text=f"PLayer's hand: {sum(player_hand)}")
+    print(player_hand)
     dealer_num.configure(text=f"Dealer's hand: {sum(dealer_hand)}")
+    print(dealer_hand)
 
 
 def adjust_ace():
