@@ -7,8 +7,10 @@ from config import *
 import os
 
 
+
+
 db=mysql.connector.connect(
-    host= ip,
+    host= 'localhost',
     user="root",
     passwd=passwd,
     database="testdatabase"
