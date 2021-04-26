@@ -415,24 +415,24 @@ def close_all():
         widget.pack_forget()
         widget.place_forget()
 
+if __name__ == '__main__':
+
+    root=Tk()
+    root.title('Blackjack')
+    #sets the background of the window to be green
+    root.configure(background='green')
+
+    #opening welcome label
+    welcome1=Label(root,text='Welcome to',background='green',font=('Florent',50))
+    welcome2=Label(root,text="Dart's Casino",background='green',font=('Florent',50))
+    welcome1.grid(row=0,column=0,columnspan=10)
+    welcome2.grid(row=1,column=0,columnspan=10)
+
+    #when run 2 buttons appear sign up or create account
+    sign=Button(root,text='Sign In',background='green',font=('Florent',15),command=lambda:signup())
+    sign.grid(row=3,column=0,columnspan=10)
+    create=Button(root,text='Create Account',background='green',font=('Florent',15),command=lambda: create_account())
+    create.grid(row=4,column=0,columnspan=10)
 
 
-root=Tk()
-root.title('Blackjack')
-#sets the background of the window to be green
-root.configure(background='green')
-
-#opening welcome label
-welcome1=Label(root,text='Welcome to',background='green',font=('Florent',50))
-welcome2=Label(root,text="Dart's Casino",background='green',font=('Florent',50))
-welcome1.grid(row=0,column=0,columnspan=10)
-welcome2.grid(row=1,column=0,columnspan=10)
-
-#when run 2 buttons appear sign up or create account
-sign=Button(root,text='Sign In',background='green',font=('Florent',15),command=lambda:signup())
-sign.grid(row=3,column=0,columnspan=10)
-create=Button(root,text='Create Account',background='green',font=('Florent',15),command=lambda: create_account())
-create.grid(row=4,column=0,columnspan=10)
-
-
-root.mainloop()
+    root.mainloop()
