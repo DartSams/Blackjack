@@ -1,45 +1,32 @@
-# Blackjack
-
-<p> 
-    <img src="Discord-Server-Banner.jpg">
-</p>
+# BlackJack
 
 
-## Features 
-- Slot machine
-- Blackjack
-- Sauce
-- Money System
+The objective of the game is to beat the dealer, which  can be done in the following ways:
 
-## Create the Bot
-- go to https://discord.com/developers/applications and create a new application the application and bot share the same name and can be changed later 
-- click OAuth2 on the left side
-    - under scopes click bot and copy the generated url then paste into the browser and select which server to add the bot in
-- click bot on the left side then create bot
-    - click presence & server member intents under `Privileged Gateway Intents` this allows the bot to send links
-    - under `bot permissions` click administrator
-    - copy/write down the bot generated token you can always generate another one if it gets exposed
+* Get 21 points on the player's first two cards (called a blackjack), without a dealer blackjack;
+* Reach a final score higher than the dealer without exceeding 21; or
+* Let the dealer draw additional cards until his or her hand exceeds 21.
+
+The game is implemented with standard 1 deck of cards.It has implementation of four standard options for player after receiving two initial cards: __Hit,Double Down , Stand__.The rules for each implementation is described below:
+
+* __Hit__: Draw another card
+* __Double Down__: After receiving initial two card, player can draw another card then immediately stand.
+* __Stand__:Player takes no more cards and dealer draws cards based on how many times the player drew.
+
+* A blackjack beats any hand that is not a blackjack, even one with a value of 21.
+* In the case of a tied score, known as "push" bets are normally returned without adjustment; however, a blackjack beats any hand that is not a blackjack, even one with a value of 21.
+* An outcome of blackjack vs. blackjack results in a push.
+
 
 ## Installations
 - Clone the repository
 - in the `.env` file replace the token with your own this links the bot to the python script
 
 
-# Commands
-> all commands must begin with `.`
-- balance
-- gift
-- sauce
-
-### to begin slot machine game
-- slot high
-- slot low
-
-### to begin blackjack game
-- sit
-- bj
-- hit
-- stand
+### to begin using the interactive gui blackjack game
+- create account
+- sign in
+- select the blackjack game
 
 
 
@@ -52,3 +39,23 @@
 - pokemon games (catch wild pokemon)
 - music station
 
+
+
+# BlackJack
+
+
+The objective of the game is to beat the dealer, which  can be done in the following ways:
+
+* Get 21 points on the player's first two cards (called a blackjack), without a dealer blackjack;
+* Reach a final score higher than the dealer without exceeding 21; or
+* Let the dealer draw additional cards until his or her hand exceeds 21.
+
+The game is implemented with standard 1 deck of cards.It has implementation of four standard options for player after receiving two initial cards: __Hit,Double Down , Stand__.The rules for each implementation is described below:
+
+* __Hit__: Draw another card
+* __Double Down__: After receiving initial two card, player can draw another card then immediately stand.
+* __Stand__:Player takes no more cards and dealer draws cards based on how many times the player drew.
+
+* A blackjack beats any hand that is not a blackjack, even one with a value of 21.
+* In the case of a tied score, known as "push" bets are normally returned without adjustment; however, a blackjack beats any hand that is not a blackjack, even one with a value of 21.
+* An outcome of blackjack vs. blackjack results in a push.
