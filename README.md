@@ -18,7 +18,7 @@ The game is implemented with standard 1 deck of cards.It has implementation of f
 * An outcome of blackjack vs. blackjack results in a push.
 
 
-### to begin using the interactive gui blackjack game
+### To begin using the interactive gui blackjack game
 - run the script and click create account
 - sign in
 - select the blackjack game
