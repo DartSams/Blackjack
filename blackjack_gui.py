@@ -5,14 +5,14 @@ from PIL import ImageTk,Image
 import sys
 from config import *
 import os
+from dotenv import load_dotenv
 
 
-
-
+load_dotenv()
 db=mysql.connector.connect(
     host= 'localhost',
     user="root",
-    passwd=passwd,
+    passwd=os.getenv('passwd'),
     database="testdatabase"
     )
 
